@@ -2,10 +2,11 @@
 #define int long long int
 using namespace std;
 
-const int mod = 1e9 + 7;
-const int sz = 2;
+const int mod = 1e9 ;
+const int sz = 10;
 
-struct Mat {
+class Mat {
+public:
 	int m[sz][sz];
 	Mat() {
 		memset(m, 0, sizeof(m));
@@ -29,25 +30,31 @@ struct Mat {
 	}
 };
 
-int fib(int n) {
+int seq(int* b, int* c, int n, int k) {
 	Mat res;
 	res.identity();
 	Mat t;
-	t.m[0][0] = t.m[0][1] = t.m[1][0] = 1;
-	if (n <= 2)return 1;
-	n -= 2;
+	for (int i = 0; i < k; i++)t.m[0][i] = c[i];
+	for (int i = 1; i < k; i++)t.m[i][i - 1] = 1;
 	while (n) {
 		if (n & 1)res = res * t;
 		t = t * t;
 		n /= 2;
 	}
-	return (res.m[0][0] + res.m[0][1]) % mod;
+	int ans = 0;
+	for (int i = 0; i < k; i++)ans = (ans + res.m[0][i] * b[k - i - 1]) % mod;
+	return ans;
 }
 
 void solve() {
-	int n;
+	int k;
+	cin >> k;
+	int n, c[k], b[k];
+	for (int i = 0; i < k; i++)cin >> b[i];
+	for (int i = 0; i < k; i++)cin >> c[i];
 	cin >> n;
-	cout << fib(n) << endl;
+	if (n <= k)cout << b[n - 1] << endl;
+	else cout << seq(b, c, n - k, k) << endl;
 }
 
 int32_t main() {
@@ -56,8 +63,8 @@ int32_t main() {
 	freopen("/home/pushpak/Documents/C++/output.txt", "w", stdout);
 #endif
 
-	int t = 1;
-	// cin >> t;
+	int t ;
+	cin >> t;
 	while (t--)solve();
 	return 0;
 }
